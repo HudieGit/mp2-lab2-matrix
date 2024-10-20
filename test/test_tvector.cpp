@@ -159,4 +159,7 @@ TEST(TDynamicVector, cant_multiply_vectors_with_not_equal_size){
 	EXPECT_ANY_THROW(v0 * v1);
 }
 
+//мои тесты на move симантику
+
+
 // довольно скучная вещь, но блин надо...

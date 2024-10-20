@@ -23,20 +23,22 @@ protected:
   size_t sz;
   T* pMem;
 public:
-  TDynamicVector(size_t size = 1) : sz(size){ // конструктор
-      if (sz < 0 || sz > MAX_VECTOR_SIZE) {
+  TDynamicVector(size_t size = 1) { // конструктор
+      if (size < 0 || size > MAX_VECTOR_SIZE) {
           throw out_of_range("Vector is incorrect");
       }
-     pMem = new T[sz];// {}; // У типа T д.б. конструктор по умолчанию //хотя бы тут все нормально
+      sz = size;
+      pMem = new T[sz];// {}; // У типа T д.б. конструктор по умолчанию //хотя бы тут все нормально
   }
-  TDynamicVector(T* arr, size_t s) : sz(s){
-      if (sz < 0 || sz > MAX_VECTOR_SIZE) {
+  TDynamicVector(T* arr, size_t s) {
+      if (s < 0 || s > MAX_VECTOR_SIZE) {
           throw out_of_range("vector is incorrect");
-    }
-    pMem = new T[sz];
-    for (int i = 0; i < sz; i++) {
-        pMem[i] = arr[i];
-    } 
+      }
+      sz = s;
+      pMem = new T[sz];
+      for (int i = 0; i < sz; i++) {
+          pMem[i] = arr[i];
+      }
   }
   TDynamicVector(const TDynamicVector& v){ //конструктор копирования
       sz = v.sz;
@@ -55,26 +57,25 @@ public:
       delete[] pMem;
   }
   TDynamicVector& operator=(const TDynamicVector& v){ // оператор присваивания
-      if (this == &v) {
-          return *this;
-      }
-      delete[] pMem;
-      sz = v.sz;
-      pMem = new T[sz];
-      for (int i = 0; i < sz; i++) {
-          pMem[i] = v.pMem[i];
+      if (this != &v) {
+          delete[] pMem;
+          sz = v.sz;
+          pMem = new T[sz];
+          for (int i = 0; i < sz; i++) {
+              pMem[i] = v.pMem[i];
+          }
       }
       return *this;
   }
   TDynamicVector& operator=(TDynamicVector&& v) noexcept{
-      if (this == &v) {
-          return *this;
+      if (this != &v) {
+          delete[] pMem;
+          pMem = std::move(v.pMem);
+          v.pMem = nullptr;
+          sz = v.sz;
+          v.sz = 0;
       }
-      delete[] pMem;
-      pMem = std::move(v.pMem);
-      sz = v.sz;
-      sz = 0;
-      pMem = nullptr;
+
       return *this; // а почему в прошлом методе не написали изначально? странно
   }
 
@@ -217,6 +218,19 @@ public:
 
   using TDynamicVector<TDynamicVector<T>>::operator[];
 
+  T& at(size_t ind_str, size_t ind_col) {
+      if ((ind_str < 0 || ind_str > sz - 1) || (ind_col < 0, ind_col > sz - 1)) {
+          throw out_of_range("matrix index is incorrect");
+      }
+      return this->pMem[ind_str][ind_col];
+  }
+  const T& at(size_t ind) const {
+      if ((ind_str < 0 || ind_str > sz - 1) || (ind_col < 0, ind_col > sz - 1)) {
+          throw out_of_range("matrix index is incorrect");
+      }
+      return this->pMem[ind_str][ind_col];
+  }
+
   // сравнение
   bool operator==(const TDynamicMatrix& m) const noexcept{
       if (this == &m) { // если сравниваем буквально с тем же
@@ -258,10 +272,10 @@ public:
   // матрично-матричные операции
   TDynamicMatrix operator+(const TDynamicMatrix& m){
       if (sz != m.size()) {
-          throw logic_error();
+          throw logic_error("error: matrixes different size");
       }
 
-      TDynamicMatrix<T> result(rz);
+      TDynamicMatrix<T> result(sz);
       for (int i = 0; i < sz; i++) {
           result.pMem[i] = pMem[i] + m.pMem[i];
       }
@@ -270,10 +284,10 @@ public:
   }
   TDynamicMatrix operator-(const TDynamicMatrix& m){
       if (sz != m.size()) {
-          throw logic_error();
+          throw logic_error("error: matrixes different size");
       }
 
-      TDynamicMatrix<T> result(rz);
+      TDynamicMatrix<T> result(sz);
       for (int i = 0; i < sz; i++) {
           result.pMem[i] = pMem[i] - m.pMem[i];
       }
@@ -282,10 +296,10 @@ public:
   }
   TDynamicMatrix operator*(const TDynamicMatrix& m){ //мяу мяу, мяу мяу мяу....
       if (sz != m.size()) {
-          throw logic_error();
+          throw logic_error("error: matrixes different size");
       }
 
-      TDynamicMatrix<T> result(rz);
+      TDynamicMatrix<T> result(sz);
       //зануление матрицы результата
       for (int i = 0; i < sz; i++) {
           for (int j = 0; j < sz; j++) {
