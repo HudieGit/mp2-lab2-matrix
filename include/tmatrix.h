@@ -28,7 +28,7 @@ public:
           throw out_of_range("Vector is incorrect");
       }
       sz = size;
-      pMem = new T[sz];// {}; // У типа T д.б. конструктор по умолчанию //хотя бы тут все нормально
+      pMem = new T[sz]();// {}; // У типа T д.б. конструктор по умолчанию //хотя бы тут все нормально
   }
   TDynamicVector(T* arr, size_t s) {
       if (s < 0 || s > MAX_VECTOR_SIZE) {
@@ -112,8 +112,8 @@ public:
           if (pMem[i] != v.pMem[i]) {
               return 0;
           }
-          return 1;
       }
+      return 1;
   }
   bool operator!=(const TDynamicVector& v) const noexcept{
       return !(*this == v);
@@ -207,12 +207,13 @@ class TDynamicMatrix : private TDynamicVector<TDynamicVector<T>> {
     using TDynamicVector<TDynamicVector<T>>::sz;
 
 public:
-    TDynamicMatrix(size_t s = 1) : TDynamicVector<TDynamicVector<T>>(s){
+    TDynamicMatrix(size_t s) : TDynamicVector<TDynamicVector<T>>(s) {
         if (s < 0 || s > MAX_MATRIX_SIZE) {
             throw out_of_range("matrix size is incorrect");
         }
+
         for (size_t i = 0; i < sz; i++) {
-            pMem[i] = TDynamicVector<T>(sz);
+            pMem[i] = TDynamicVector<T> (sz);
         }
   }
 
@@ -311,10 +312,14 @@ public:
       for (int i = 0; i < sz; i++) {
           for (int j = 0; j < sz; j++) {
               for (int k = 0; k < sz; k++) {
-                  result.pMem[i][j] += pMem[i][j] * m.pMem[j][k];
+                  result.pMem[i][j] += pMem[i][k] * m.pMem[k][j];
+                  
               }
+              std::cout << result.pMem[i][j];
           }
       }
+
+      return result;
   }
 
   // ввод/вывод

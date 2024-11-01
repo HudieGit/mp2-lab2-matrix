@@ -128,3 +128,41 @@ TEST(TDynamicMatrix, cant_subtract_matrixes_with_not_equal_size){
 	EXPECT_ANY_THROW(m - v);
 }
 
+TEST(TDynamicMatrix, cant_multiply_matrixes_with_not_equal_size) {
+	TDynamicMatrix<int> m(5);
+	TDynamicMatrix<int> v(6);
+	EXPECT_ANY_THROW(m * v);
+}
+
+TEST(TDynamicMatrix, cant_multiply_matrixes_with_equal_size) {
+	TDynamicMatrix<int> m(5);
+	TDynamicMatrix<int> v(5);
+	EXPECT_NO_THROW(m * v);
+}
+
+TEST(TDynamicVector, can_multiply_matrixes_with_0) {
+	TDynamicMatrix<int> v0(0);
+	TDynamicMatrix<int> v1(0);
+	EXPECT_EQ(v0 * v1, 0);
+}
+
+TEST(TDynamicVector, correct_multiply_matrixes) {
+	TDynamicMatrix<int> v0(2);
+	TDynamicMatrix<int> v1(2);
+	v0[0][0] = 1;
+	v0[0][1] = 2;
+	v0[1][0] = 3;
+	v0[1][1] = 4;
+	v1[0][0] = 5;
+	v1[0][1] = 6;
+	v1[1][0] = 7;
+	v1[1][1] = 8;
+
+	TDynamicMatrix<int> vv(2);
+	vv[0][0] = 19;
+	vv[0][1] = 22;
+	vv[1][0] = 43;
+	vv[1][1] = 50;
+	
+	EXPECT_EQ(v0 * v1, vv);
+}

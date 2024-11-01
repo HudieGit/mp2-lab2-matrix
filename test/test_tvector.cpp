@@ -2,6 +2,50 @@
 
 #include <gtest.h>
 
+TEST(TDynamicVector, can_create_copied_vector_with_move) {
+	TDynamicVector<int> n(5);
+	EXPECT_NO_THROW(TDynamicVector<int> v(std::move(n)));
+}
+
+TEST(TDynamicVector, can_use_copied_vector_with_move) {
+	TDynamicVector<int> n(5);
+	for (int i = 0; i < n.size(); i++) {
+		n[i] = i;
+	}
+	TDynamicVector<int> v(std::move(n));
+
+	EXPECT_EQ(v[0], 0);
+	EXPECT_EQ(v[1], 1);
+	EXPECT_EQ(v[2], 2);
+	EXPECT_EQ(v[3], 3);
+	EXPECT_EQ(v[4], 4);
+	EXPECT_EQ(n.size(), 0);
+}
+
+
+TEST(TDynamicVector, can_use_move_operator) {
+	TDynamicVector<int> n(5);
+	TDynamicVector<int> v;
+	EXPECT_NO_THROW(v = std::move(n));
+}
+
+TEST(TDynamicVector, check_correct_move_operator) {
+	TDynamicVector<int> n(5);
+	for (int i = 0; i < n.size(); i++) {
+		n[i] = i;
+	}
+	TDynamicVector<int> v;
+
+	v = std::move(n);
+
+	EXPECT_EQ(v[0], 0);
+	EXPECT_EQ(v[1], 1);
+	EXPECT_EQ(v[2], 2);
+	EXPECT_EQ(v[3], 3);
+	EXPECT_EQ(v[4], 4);
+	EXPECT_EQ(n.size(), 0);
+}
+
 TEST(TDynamicVector, can_create_vector_with_positive_length){
 	EXPECT_NO_THROW(TDynamicVector<int> v(5));
 }
@@ -159,7 +203,7 @@ TEST(TDynamicVector, cant_multiply_vectors_with_not_equal_size){
 	EXPECT_ANY_THROW(v0 * v1);
 }
 
-//мои тесты на move симантику
+
 
 
 // довольно скучная вещь, но блин надо...
