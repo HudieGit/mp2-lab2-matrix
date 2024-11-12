@@ -321,12 +321,13 @@ public:
   // ввод/вывод
   friend istream& operator>>(istream& istr, TDynamicMatrix& v){
       for (int i = 0; i < v.sz; i++) {
-          std::istr >> v.pMem[i];
+          istr >> v.pMem[i];
       }
+      return istr;
   }
   friend ostream& operator<<(ostream& ostr, const TDynamicMatrix& v){
       for (int i = 0; i < v.sz; i++) {
-          std::cout << v.pMem[i] << endl;
+          cout << v.pMem[i] << endl;
       }
       return ostr;
   }
