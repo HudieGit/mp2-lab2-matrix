@@ -220,13 +220,13 @@ public:
   using TDynamicVector<TDynamicVector<T>>::operator[];
 
   T& at(size_t ind_str, size_t ind_col) {
-      if ((ind_str < 0 || ind_str > sz - 1) || (ind_col < 0, ind_col > sz - 1)) {
+      if ((ind_str < 0 || ind_str > sz - 1) || (ind_col < 0 || ind_col > sz - 1)) {
           throw out_of_range("matrix index is incorrect");
       }
       return this->pMem[ind_str][ind_col];
   }
-  const T& at(size_t ind) const {
-      if ((ind_str < 0 || ind_str > sz - 1) || (ind_col < 0, ind_col > sz - 1)) {
+  const T& at(size_t ind_str, size_t ind_col) const {
+      if ((ind_str < 0 || ind_str > sz - 1) || (ind_col < 0 || ind_col > sz - 1)) {
           throw out_of_range("matrix index is incorrect");
       }
       return this->pMem[ind_str][ind_col];
@@ -252,9 +252,11 @@ public:
   }
 
   // матрично-скалярные операции
-  TDynamicVector<T> operator*(const T& val){
+  TDynamicMatrix<T> operator*(const T& val) {
       TDynamicMatrix<T> result(sz);
-      result.pMem = pMem * val;
+      for (size_t i = 0; i < sz; i++) {
+          result.pMem[i] = pMem[i] * val; 
+      }
       return result;
   }
 
@@ -263,7 +265,7 @@ public:
       if (sz != v.size()) {
           throw logic_error("");
       }
-      TDynamicMatrix<T> result(sz);
+      TDynamicVector<T> result(sz);
       for (int i = 0; i < sz; i++) {
           result[i] = pMem[i] * v;
       }
@@ -301,16 +303,10 @@ public:
       }
 
       TDynamicMatrix<T> result(sz);
-      //зануление матрицы результата
-      for (int i = 0; i < sz; i++) {
-          for (int j = 0; j < sz; j++) {
-              result.pMem[i][j] = 0;
-          }
-      }
-
       //умножение...
       for (int i = 0; i < sz; i++) {
           for (int j = 0; j < sz; j++) {
+              result.pMem[i][j] = 0;
               for (int k = 0; k < sz; k++) {
                   result.pMem[i][j] += pMem[i][k] * m.pMem[k][j];
                   
@@ -325,7 +321,7 @@ public:
   // ввод/вывод
   friend istream& operator>>(istream& istr, TDynamicMatrix& v){
       for (int i = 0; i < v.sz; i++) {
-          std::cout << v.pMem[i] << endl;
+          std::istr >> v.pMem[i];
       }
   }
   friend ostream& operator<<(ostream& ostr, const TDynamicMatrix& v){

@@ -146,6 +146,26 @@ TEST(TDynamicVector, can_multiply_matrixes_with_0) {
 	EXPECT_EQ(v0 * v1, 0);
 }
 
+TEST(TDynamicVector, can_multiply_matrixes_with_vector) {
+	TDynamicMatrix<int> v0(2);
+	TDynamicVector<int> v1(2);
+	EXPECT_NO_THROW(v0 * v1);
+}
+
+TEST(TDynamicVector, can_multiply_matrixes_with_vector_get_correct) {
+	TDynamicMatrix<int> v0(2);
+	TDynamicVector<int> v1(2);
+	v0[1][1] = 1;
+	v0[0][0] = 1;
+	v1[0] = 1;
+	v1[1] = 1;
+	
+	TDynamicVector<int> v2(2);
+	v2[0] = 1;
+	v2[1] = 1;
+	EXPECT_EQ(v0 * v1, v2);
+}
+
 TEST(TDynamicVector, correct_multiply_matrixes) {
 	TDynamicMatrix<int> v0(2);
 	TDynamicMatrix<int> v1(2);
